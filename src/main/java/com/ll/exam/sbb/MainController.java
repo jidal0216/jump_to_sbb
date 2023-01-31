@@ -3,6 +3,9 @@ package com.ll.exam.sbb;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @Controller
 public class MainController {
     @RequestMapping("/sbb")
@@ -22,12 +25,13 @@ public class MainController {
     @ResponseBody
     public String showPage1() {
         return """
-               <form method="POST" action="/page2">
-                    <input type="number" name="age" placeholder="나이" />
-                    <input type="submit" value="page2로 POST 방식으로 이동" />
-               </form>
-                """;
+                <form method="POST" action="/page2">
+                     <input type="number" name="age" placeholder="나이" />
+                     <input type="submit" value="page2로 POST 방식으로 이동" />
+                </form>
+                 """;
     }
+
     @PostMapping("/page2")
     @ResponseBody
     public String showPage2Post(@RequestParam(defaultValue = "0") int age) {
@@ -47,12 +51,29 @@ public class MainController {
     }
 
     private int increaseNo = -1;
+
     @GetMapping("/increase")
     @ResponseBody
     public int showIncrease() {
         increaseNo++;
 
-        return increaseNo ;
+        return increaseNo;
 
+    }
+
+
+    @GetMapping("/Gugudan")
+    @ResponseBody
+    public String showGugudan(Integer dan, Integer limit) {
+        if (limit == null) {
+            limit = 9;
+        }
+        if (dan == null) {
+            dan = 9;
+        }
+        Integer finalDan = dan;
+        return IntStream.rangeClosed(1, limit)
+                .mapToObj(i -> "%d * %d = %d".formatted(finalDan, i, finalDan * i))
+                .collect(Collectors.joining("<br>\n"));
     }
 }
