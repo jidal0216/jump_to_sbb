@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -82,10 +83,25 @@ public class MainController {
 
     @GetMapping("/plus2")
     @ResponseBody
-    public int showPlus2(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void showPlus2(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int a = Integer.parseInt(req.getParameter("a"));
         int b = Integer.parseInt(req.getParameter("b"));
-        resp.getWriter().append(a + b + "");
+        try (PrintWriter printWriter = resp.getWriter().append(a + b + "")) {
+        }
 
+
+    }
+
+    @GetMapping("/mbti/{name}")
+    @ResponseBody
+    public String showMbti(@PathVariable String name){
+        String rs = switch (name){
+            case "홍길동" -> "INFP";
+            case "홍길순" -> "INFJ";
+            case "임꺽정" -> "INTP";
+            case "정지원" -> "INTJ";
+            default -> "모름";
+        };
+        return rs;
     }
 }
